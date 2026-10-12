@@ -1,0 +1,10 @@
+[package]
+name = "step-6_cpython"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ["cdylib"]
+
+[build-dependencies]
+bindgen = "0.73.2"

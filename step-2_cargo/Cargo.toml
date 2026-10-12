@@ -1,0 +1,5 @@
+[package]
+name = "step-2_cargo"
+version = "0.0.1"
+authors = [ "Olexandr Koval <kovalidis@gmail.com>" ]
+edition = "2024"

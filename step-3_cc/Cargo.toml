@@ -1,0 +1,8 @@
+[package]
+name = "step-3_cc"
+version = "0.0.1"
+authors = [ "Olexandr Koval <kovalidis@gmail.com>" ]
+edition = "2024"
+
+[build-dependencies]
+cc = "1.8.0"
