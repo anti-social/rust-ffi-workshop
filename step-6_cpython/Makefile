@@ -20,3 +20,7 @@ lib: $(LIB)
 .PHONY: lib-syms
 lib-syms: $(LIB)
 	nm -gD $(LIB) |rg '^|add'
+
+.PHONY: clean
+clean:
+	rm -rf target

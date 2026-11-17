@@ -1,16 +1,25 @@
 .default: run
 
+BIN := target/release/step-3_cc
+
 .PHONY: run
-run:
+run: $(BIN)
 	LD_LIBRARY_PATH=. cargo run --release
 
-build: Cargo.toml Cargo.lock build.rs src/main.rs
+.PHONY: build
+build: $(BIN)
+
+$(BIN): add.c Cargo.toml Cargo.lock build.rs $(wildcard src/*.rs)
 	cargo build --release
 
 .PHONY: bin-deps
-bin-deps: build
-	readelf -d target/release/step-3_cc |rg '^|libadd'
+bin-deps: $(BIN)
+	readelf -d $(BIN) |rg '^|libadd'
 
 .PHONY: bin-syms
-bin-syms: build
-	readelf -s target/release/step-3_cc |rg add
+bin-syms: $(BIN)
+	readelf -s $(BIN) |rg add
+
+.PHONY: clean
+clean:
+	rm -rf target

@@ -1,23 +1,33 @@
 .default: run
 
+LIB := target/release/libstep_5_cdylib.so
+
 .PHONY: run
-run: lib build
+run: main
 	LD_LIBRARY_PATH=target/release ./main
 
-build: main.c
+main: main.c $(LIB)
 	gcc -L target/release -l step_5_cdylib main.c -o main
 
 .PHONY: bin-deps
-bin-deps: build
+bin-deps: main
 	objdump -x main |rg 'NEEDED'
 
 .PHONY: bin-syms
-bin-syms: build
+bin-syms: main
 	nm -gD main |rg '^|add'
 
-lib: Cargo.toml Cargo.lock src/lib.rs
+.PHONY: lib
+lib: $(LIB)
+
+$(LIB): Cargo.toml Cargo.lock src/lib.rs
 	cargo build --release
 
 .PHONY: lib-syms
 lib-syms: lib
-	nm -gD target/release/libstep_5_cdylib.so |rg '^|add'
+	nm -gD $(LIB) |rg '^|add'
+
+.PHONY: clean
+clean:
+	rm -rf target
+	rm -f main

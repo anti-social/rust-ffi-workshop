@@ -1,24 +1,38 @@
 .default: run
 
+LIB := libadd.so
+
 .PHONY: run
-run: build
+run: main
 	LD_LIBRARY_PATH=. ./main
 
-build: lib main.rs
+.PHONY: build
+build: main
+
+main: main.rs $(LIB)
 	rustc -C opt-level=3 -C strip=symbols -L . -l add main.rs
 
 .PHONY: bin-deps
-bin-deps: build
+bin-deps: main
 	readelf -d main |rg '^|libadd'
 
 .PHONY: bin-syms
-bin-syms: build
+bin-syms: main
 	readelf -s main |rg add
 
-lib: add.c
-	gcc -c -fPIC add.c -o add.o
-	gcc add.o -shared -o libadd.so
+.PHONY: lib
+lib: $(LIB)
 
-.PHONY: lib-symbols
-lib-syms: lib
-	readelf -s libadd.so |rg '^|add'
+add.o: add.c
+	gcc -c -fPIC add.c -o add.o
+
+$(LIB): add.o
+	gcc add.o -shared -o $(LIB)
+
+.PHONY: lib-syms
+lib-syms: $(LIB)
+	readelf -s $(LIB) |rg '^|add'
+
+.PHONY: clean
+clean:
+	rm -f main add.o $(LIB)
