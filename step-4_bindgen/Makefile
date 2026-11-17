@@ -4,8 +4,7 @@
 run: lib
 	LD_LIBRARY_PATH=. cargo run --release
 
-.PHONY: build
-build: lib
+build: lib add.h Cargo.toml Cargo.lock build.rs src/main.rs
 	cargo build --release
 
 .PHONY: bin-deps

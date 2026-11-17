@@ -15,8 +15,7 @@ bin-deps: build
 bin-syms: build
 	nm -gD main |rg '^|add'
 
-.PHONY: lib
-lib:
+lib: Cargo.toml Cargo.lock src/lib.rs
 	cargo build --release
 
 .PHONY: lib-syms
