@@ -1,24 +1,22 @@
 .default: run
 
+RELEASE_DIR := target/release
+LIB := $(RELEASE_DIR)/libstep_6_cpython.so
+EXT := $(RELEASE_DIR)/add$(shell python-config --extension-suffix)
+
 .PHONY: run
-run: build lib
-	LD_LIBRARY_PATH=target/release ./main
+run: $(EXT)
+	PYTHONPATH=$(RELEASE_DIR) ./main.py
 
-build: main.c
-	gcc -L target/release -l step_5_cdylib main.c -o main
+$(EXT): $(LIB)
+	cp $< $@
 
-.PHONY: bin-deps
-bin-deps: build
-	objdump -x main |rg 'NEEDED'
-
-.PHONY: bin-syms
-bin-syms: build
-	nm -gD main |rg '^|add'
-
-.PHONY: lib
-lib:
+$(LIB): Cargo.toml Cargo.lock build.rs $(wildcard src/*.rs)
 	cargo build --release
 
+.PHONY: lib
+lib: $(LIB)
+
 .PHONY: lib-syms
-lib-syms: lib
-	nm -gD target/release/libstep_5_cdylib.so |rg '^|add'
+lib-syms: $(LIB)
+	nm -gD $(LIB) |rg '^|add'

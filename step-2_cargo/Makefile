@@ -1,7 +1,7 @@
 .default: run
 
 .PHONY: run
-run:
+run: lib
 	LD_LIBRARY_PATH=. cargo run --release
 
 .PHONY: build

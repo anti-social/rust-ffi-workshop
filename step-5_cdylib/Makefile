@@ -1,7 +1,7 @@
 .default: run
 
 .PHONY: run
-run: build lib
+run: lib build
 	LD_LIBRARY_PATH=target/release ./main
 
 build: main.c
